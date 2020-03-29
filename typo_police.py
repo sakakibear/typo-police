@@ -1,6 +1,7 @@
 from heapq import heapify, heappush, heappop, heappushpop
 from nltk.stem.lancaster import LancasterStemmer as LS
 from nltk.stem.wordnet import WordNetLemmatizer as WNL
+import os
 import re
 import sys
 
@@ -22,6 +23,13 @@ class TypoPolice:
         self.ls = LS()
 
     def load_dict(self, path):
+        if os.path.isfile(path):
+            self.load_file(path)
+        elif os.path.isdir(path):
+            for item in os.listdir(path):
+                self.load_dict(os.path.join(path, item))
+
+    def load_file(self, path):
         with open(path) as file:
             line = file.read()
             line = line.strip()
