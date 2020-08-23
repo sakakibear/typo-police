@@ -32,10 +32,12 @@ eg.
 
 `cat foo.txt | python3 typo_police.py dict1.txt dict2.txt`
 
+`cat foo.txt | python3 typo_police.py dict/`
+
 ### Options
 
 `DICT...`
 
-One or more dictionary file(s).
+One or more dictionary file(s) or directory(s).
 
 Words in dictionaries and conjugations of them will not be considered as typos.
