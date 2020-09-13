@@ -14,9 +14,35 @@ class TypoPolice:
     # Minimum length of combination word 
     min_combi_len = 8
     # Maximum edit distance length of suggestion
-    suggestion_dist = 2
+    suggestion_dist = 4
     # Heap size for suggestion
     heap_size = 5
+
+    cost_low = 1
+    cost_high = 2
+    low_cost_chars = {
+        'b':'v',
+        'c':'s',
+        'e':'iw',
+        'f':'gv',
+        'g':'f',
+        'h':'j',
+        'i':'ey',
+        'j':'h',
+        'l':'r',
+        'm':'n',
+        'n':'m',
+        'o':'p',
+        'p':'o',
+        'q':'w',
+        'r':'lt',
+        's':'c',
+        't':'r',
+        'u':'y',
+        'v':'b',
+        'w':'e',
+        'y':'iu',
+    }
 
     def __init__(self):
         self.wnl = WNL()
@@ -94,16 +120,32 @@ class TypoPolice:
         n = len(word2)
         dp = [[0 for j in range(n+1)] for i in range(m+1)]
         for i in range(0, m + 1):
-            dp[i][0] = i
+            dp[i][0] = i * self.cost_high
         for j in range(0, n + 1):
-            dp[0][j] = j
+            dp[0][j] = j * self.cost_high
         for i in range(1, m + 1):
             for j in range(1, n + 1):
-                cost = 0
-                if word1[i-1] != word2[j-1]:
-                    cost = 1
-                dp[i][j] = min(dp[i-1][j] + 1, dp[i][j-1] + 1, dp[i-1][j-1] + cost)
+                modify_cost = dp[i-1][j-1] + self.get_modify_cost(word1, i-1, word2, j-1)
+                omit_cost_1 = dp[i][j-1] + self.get_omit_cost(word1, i-1, word2, j-1)
+                omit_cost_2 = dp[i-1][j] + self.get_omit_cost(word2, j-1, word1, i-1)
+                dp[i][j] = min(modify_cost, omit_cost_1, omit_cost_2)
         return dp[m][n]
+
+    # Cost of modifying word1[i] to word2[j]
+    def get_modify_cost(self, word1, i, word2, j):
+        if word1[i] == word2[j]:
+            return 0
+        if word1[i] in self.low_cost_chars and word2[j] in self.low_cost_chars[word1[i]]:
+            return self.cost_low
+        return self.cost_high
+
+    # Cost of omitted letter in word1.
+    # Return low cost if one of double letters is omitted.
+    # eg. word1 = co[m]ent, word2 = co[mm]ent
+    def get_omit_cost(self, word1, i, word2, j):
+        if word1[i] == word2[j] and j > 0 and word2[j] == word2[j-1]:
+            return self.cost_low
+        return self.cost_high
 
 
 # Patterns
