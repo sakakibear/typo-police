@@ -39,7 +39,7 @@ class TypoPolice:
         's':'c',
         't':'r',
         'u':'y',
-        'v':'bg',
+        'v':'b',
         'w':'e',
         'y':'iu',
     }
