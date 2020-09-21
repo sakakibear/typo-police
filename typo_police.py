@@ -129,6 +129,8 @@ class TypoPolice:
                 omit_cost_1 = dp[i][j-1] + self.get_omit_cost(word1, i-1, word2, j-1)
                 omit_cost_2 = dp[i-1][j] + self.get_omit_cost(word2, j-1, word1, i-1)
                 dp[i][j] = min(modify_cost, omit_cost_1, omit_cost_2)
+                if self.is_reverted(word1, i-1, word2, j-1):
+                    dp[i][j] = min(dp[i][j], dp[i-2][j-2] + self.cost_low)
         return dp[m][n]
 
     # Cost of modifying word1[i] to word2[j]
@@ -146,6 +148,10 @@ class TypoPolice:
         if word1[i] == word2[j] and j > 0 and word2[j] == word2[j-1]:
             return self.cost_low
         return self.cost_high
+
+    # Check if 2 consecutive letters in word1 and word2 are reverted
+    def is_reverted(self, word1, i, word2, j):
+        return i > 0 and j > 0 and word1[i-1] == word2[j] and word1[i] == word2[j-1]
 
 
 # Patterns
