@@ -1,5 +1,4 @@
 from heapq import heapify, heappush, heappop, heappushpop
-from nltk.stem.lancaster import LancasterStemmer as LS
 from nltk.stem.wordnet import WordNetLemmatizer as WNL
 import os
 import re
@@ -46,7 +45,6 @@ class TypoPolice:
 
     def __init__(self):
         self.wnl = WNL()
-        self.ls = LS()
 
     def load_dict(self, path):
         if os.path.isfile(path):
@@ -75,9 +73,6 @@ class TypoPolice:
             lemma = self.wnl.lemmatize(word, pos)
             if lemma in self.dict:
                 return True
-        stem = self.ls.stem(word)
-        if stem in self.dict:
-            return True
         # Might be Britain English (colour, metre, etc.)
         br_word = self.to_britain(word)
         if br_word in self.dict:
