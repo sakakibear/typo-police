@@ -41,3 +41,7 @@ eg.
 One or more dictionary file(s) or directory(s).
 
 Words in dictionaries and conjugations of them will not be considered as typos.
+
+----
+
+Test SSH access.
